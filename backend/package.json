@@ -1,0 +1,15 @@
+{
+    "name": "tp-exam-chat-backend",
+    "version": "1.0.0",
+    "description": "Real-time mini chat backend for DevOps exam",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js",
+      "test": "echo \"No tests specified\" && exit 0"
+    },
+    "dependencies": {
+      "express": "^4.18.2",
+      "cors": "^2.8.5"
+    },
+    "author": "Salim"
+  }

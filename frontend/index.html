@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Mini Chat</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 20px auto; padding: 10px; }
+        #chat-box { height: 300px; border: 1px solid #ccc; overflow-y: scroll; padding: 10px; margin-bottom: 10px; background: #f9f9f9; }
+        .msg { margin-bottom: 8px; border-bottom: 1px solid #eee; }
+        .meta { font-size: 0.8em; color: #666; }
+        input, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+    <h2>Mini Chat [cite: 4]</h2>
+    <input type="text" id="pseudo" placeholder="Enter your pseudo..." required>
+    
+    <div id="chat-box"></div>
+
+    <input type="text" id="message" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const API_URL = "https://YOUR_BACKEND_RENDER_URL/api/messages";
+
+        async function fetchMessages() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                const chatBox = document.getElementById('chat-box');
+                chatBox.innerHTML = data.map(m => `
+                    <div class="msg">
+                        <span class="meta">[${m.time}]</span> <strong>${m.author}:</strong> ${m.content}
+                    </div>
+                `).join('');
+                chatBox.scrollTop = chatBox.scrollHeight;
+            } catch (err) { console.error("Error fetching messages", err); }
+        }
+
+        async function sendMessage() {
+            const author = document.getElementById('pseudo').value;
+            const content = document.getElementById('message').value;
+            if (!author || !content) return alert("Fill in both fields!");
+
+            await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ author, content })
+            });
+            document.getElementById('message').value = '';
+            fetchMessages();
+        }
+
+        // Auto-refresh every 4 seconds [cite: 29]
+        setInterval(fetchMessages, 4000);
+        fetchMessages();
+    </script>
+</body>
+</html>
